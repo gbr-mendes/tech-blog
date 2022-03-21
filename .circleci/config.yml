@@ -6,9 +6,9 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Build container
-        command: |
-        docker-compose build
+          name: Build container
+          command: |
+            docker-compose build
 
       - run:
           name: Running tests
