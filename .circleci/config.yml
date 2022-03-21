@@ -1,9 +1,10 @@
 version: 2 # CircleCI version
 jobs:
   build:
-    docker:
-      - image: cimg/python:3.10.2
-    steps:
-      - checkout
-      - run: python --version
-      - run: pwd && dir
+    machine: true # Use a Linux VM instead of docker environment
+    working_directory: ~/repo # Default working directory, where your project will be cloned
+     steps:
+        - checkout
+        - run: docker build .
+        - setup_remote_docker:
+          version: 19.03.13
