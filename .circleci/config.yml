@@ -6,4 +6,4 @@ jobs:
     steps:
       - checkout
       - run: python --version
-      - run: pwd
+      - run: pwd && dir
