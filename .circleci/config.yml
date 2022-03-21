@@ -1,6 +1,7 @@
 version: 2 # CircleCI version
 jobs:
   build:
+    machine: true
     steps:
       - run: docker build .
 
