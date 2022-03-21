@@ -5,7 +5,7 @@ jobs:
       - image: circleci/python:3.7
     steps:
       - checkout
-      -run:
+      - run:
         name: Build container
         command: |
         docker-compose build
