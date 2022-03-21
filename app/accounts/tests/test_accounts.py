@@ -6,7 +6,7 @@ def sample_user(email='testuser@email.com', password='testCase'):
     return get_user_model().objects.create_user(email=email, password=password)
 
 
-class ModelTest(TestCase):
+class AccountsTest(TestCase):
 
     def test_create_user_with_email_successful(self):
         """Test creating a new user with an emails is successful"""
