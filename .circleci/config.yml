@@ -8,7 +8,7 @@ jobs:
       - run:
           name: Build container
           command: |
-            cd ~ && docker-compose build
+            pwd && docker-compose build
 
       - run:
           name: Running tests
