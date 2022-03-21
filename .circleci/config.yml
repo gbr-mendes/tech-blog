@@ -4,6 +4,3 @@ jobs:
     machine: true
     steps:
       - run: docker build .
-
-      - setup_remote_docker:
-          version: 19.03.13
