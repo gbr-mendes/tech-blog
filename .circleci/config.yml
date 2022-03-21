@@ -1,6 +1,12 @@
-version: 2 # CircleCI version
+version: 2
 jobs:
-  build:
-    machine: true
-    steps:
-      - run: ls
+  build:  # required for runs that don't use workflows
+    docker:
+      - image: cimg/python:3.10.1
+      environment:
+        PIPENV_VENV_IN_PROJECT: true
+        DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
+      - image: cimg/postgres:14.0
+      environment:
+        POSTGRES_USER: postgres
+        POSTGRES_DB: app
