@@ -5,22 +5,15 @@ jobs:
       - image: circleci/python:3.7
     steps:
       - checkout
-      - restore_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
-      - run:
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
-      - save_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
-          paths:
-            - "venv"
+      -run:
+        name: Build container
+        command: |
+        docker-compose build
+
       - run:
           name: Running tests
           command: |
-            . venv/bin/activate
-            cd app && python3 manage.py test
+            docker-compose run app sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py test"
       - store_artifacts:
           path: test-reports/
           destination: python_app
