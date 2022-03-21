@@ -6,3 +6,4 @@ jobs:
     steps:
       - checkout
       - run: python --version
+      - run: docker-compose up
