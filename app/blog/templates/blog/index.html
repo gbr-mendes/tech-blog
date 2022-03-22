@@ -16,65 +16,85 @@
 {% endblock header %}
 
 {% block content %}
-<div class="container px-4 px-lg-5">
+<div class="container px-4 px-lg-5" id="main-content">
     <div class="row gx-4 gx-lg-5 justify-content-center">
-        <div class="col-md-10 col-lg-8 col-xl-7">
-            <!-- Post preview-->
-            <div class="post-preview">
-                <a href="post.html">
-                    <h2 class="post-title">Man must explore, and this is exploration at its greatest</h2>
-                    <h3 class="post-subtitle">Problems look mighty small from 150 miles up</h3>
-                </a>
-                <p class="post-meta">
-                    Posted by
-                    <a href="#!">Start Bootstrap</a>
-                    on September 24, 2021
-                </p>
-            </div>
-            <!-- Divider-->
-            <hr class="my-4" />
-            <!-- Post preview-->
-            <div class="post-preview">
-                <a href="post.html"><h2 class="post-title">I believe every human has a finite number of heartbeats. I don't intend to waste any of mine.</h2></a>
-                <p class="post-meta">
-                    Posted by
-                    <a href="#!">Start Bootstrap</a>
-                    on September 18, 2021
-                </p>
-            </div>
-            <!-- Divider-->
-            <hr class="my-4" />
-            <!-- Post preview-->
-            <div class="post-preview">
-                <a href="post.html">
-                    <h2 class="post-title">Science has not yet mastered prophecy</h2>
-                    <h3 class="post-subtitle">We predict too much for the next year and yet far too little for the next ten.</h3>
-                </a>
-                <p class="post-meta">
-                    Posted by
-                    <a href="#!">Start Bootstrap</a>
-                    on August 24, 2021
-                </p>
-            </div>
-            <!-- Divider-->
-            <hr class="my-4" />
-            <!-- Post preview-->
-            <div class="post-preview">
-                <a href="post.html">
-                    <h2 class="post-title">Failure is not an option</h2>
-                    <h3 class="post-subtitle">Many say exploration is part of our destiny, but it’s actually our duty to future generations.</h3>
-                </a>
-                <p class="post-meta">
-                    Posted by
-                    <a href="#!">Start Bootstrap</a>
-                    on July 8, 2021
-                </p>
-            </div>
-            <!-- Divider-->
-            <hr class="my-4" />
+        <div class="col-md-10 col-lg-8 col-xl-7" id="container-posts">
             <!-- Pager-->
-            <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+            <div id="pagination-section"></div>
         </div>
     </div>
 </div>
+<script>
+    function loopPagination(page, totalButtons){
+        let buttons = ''
+        for(let i = 0; i < totalButtons; i++){
+            buttons += `<li class="page-item ${page + i === page ? 'active' : ''}" onClick="fetchArticles(${page + i})"><a class="page-link" href="#main-content">${page + i}</a></li>`
+        }
+        return buttons
+    }
+    function generatePagination(data) {
+        console.log(data)
+        const containerPosts = document.querySelector("#container-posts")
+        const paginationSection = document.createElement("div")
+        paginationSection.classList.add('d-flex','justify-content-center')
+        paginationSection.innerHTML = `
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        ${data.page > 1 ? `<li class="page-item"><a class="page-link" href="#main-content" onClick="fetchArticles(${data.page - 1})">Previous</a></li>` : ''}
+                        ${loopPagination(data.page, 3)}
+                        ${data.page < data.total_pages ? `<li class="page-item"><a class="page-link" href="#main-content" onClick="fetchArticles(${data.page + 1})">Next</a></li>` : ''}
+                    </ul>
+                </nav>
+        `
+        containerPosts.appendChild(paginationSection)
+    }
+    function generatePostHTML(title, publishedDate, author, summary, _id) {
+        const post = `
+            <!-- Post preview-->
+            <div class="post-preview" id="${_id}">
+                <a href="post.html">
+                    <h2 class="post-title">${title}</h2>
+                    <h3 class="post-subtitle">${summary.substring(0,100)}...</h3>
+                </a>
+                <p class="post-meta">
+                    ${author ? `Posted by <a href="#!">${author}</a>` : ''}
+                    
+                    On ${publishedDate}
+                </p>
+            </div>
+            <!-- Divider-->
+            <hr class="my-4" />
+        `
+        return post
+    }
+    function renderArticles(articles){
+        const containerPosts = document.querySelector("#container-posts")
+        containerPosts.innerHTML = ''
+        articles.forEach(({title, author, published_date, summary,_id}) => {
+            const post = generatePostHTML(title, published_date, author, summary,_id)
+            containerPosts.innerHTML += post
+        })
+    }
+    function fetchArticles(page=1){
+        let articles;
+        fetch(`https://free-news.p.rapidapi.com/v1/search?q=Elon%20Musk&lang=en&page=${page}&page_size=4`, {
+            "method": "GET",
+            "headers": {
+                "x-rapidapi-host": "free-news.p.rapidapi.com",
+                "x-rapidapi-key": "f27e82fc7amshcb55abb53878035p101f3ejsn995011d68f64"
+            }
+        })
+        .then(response => {
+            return response.json();
+        }).then(data => {
+            renderArticles(data.articles)
+            generatePagination(data)
+            
+        })
+        .catch(err => {
+            console.error(err);
+        });
+    }
+    fetchArticles()
+</script>
 {% endblock content %}
