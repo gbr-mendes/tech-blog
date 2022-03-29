@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     #Local apps
     'accounts.apps.AccountsConfig',
     'blog.apps.BlogConfig',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
