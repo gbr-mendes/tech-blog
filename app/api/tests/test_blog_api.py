@@ -52,7 +52,7 @@ class TestBlogPublicEndpoints(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         for i in range(0, len(self.postsPayload)):
             self.assertEqual(
-                self.postsPayload[i]["author"].id, resp.data[i]["author"]
+                self.postsPayload[i]["author"].name, resp.data[i]["author"]
             )
             self.assertEqual(
                 self.postsPayload[i]["title"], resp.data[i]["title"]
