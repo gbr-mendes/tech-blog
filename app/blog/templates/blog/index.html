@@ -33,7 +33,6 @@
         return buttons
     }
     function generatePagination(data) {
-        console.log(data)
         const containerPosts = document.querySelector("#container-posts")
         const paginationSection = document.createElement("div")
         paginationSection.classList.add('d-flex','justify-content-center')
@@ -70,31 +69,17 @@
     function renderArticles(articles){
         const containerPosts = document.querySelector("#container-posts")
         containerPosts.innerHTML = ''
-        articles.forEach(({title, author, published_date, summary,_id}) => {
-            const post = generatePostHTML(title, published_date, author, summary,_id)
+        articles.forEach(({title, author, release_date, extract,id}) => {
+            const post = generatePostHTML(title, release_date, author, extract, id)
             containerPosts.innerHTML += post
         })
     }
-    function fetchArticles(page=1){
-        let articles;
-        fetch(`https://free-news.p.rapidapi.com/v1/search?q=Elon%20Musk&lang=en&page=${page}&page_size=4`, {
-            "method": "GET",
-            "headers": {
-                "x-rapidapi-host": "free-news.p.rapidapi.com",
-                "x-rapidapi-key": "f27e82fc7amshcb55abb53878035p101f3ejsn995011d68f64"
-            }
-        })
-        .then(response => {
-            return response.json();
-        }).then(data => {
-            renderArticles(data.articles)
-            generatePagination(data)
-            
-        })
-        .catch(err => {
-            console.error(err);
-        });
+    function fetchPosts(){
+        let posts;
+        fetch('api/posts')
+        .then(response => response.json())
+        .then(data => renderArticles(data))
     }
-    fetchArticles()
+    fetchPosts()
 </script>
 {% endblock content %}
