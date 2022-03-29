@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Third part apps
+    'rest_framework',
     #Local apps
     'accounts.apps.AccountsConfig',
     'blog.apps.BlogConfig',
@@ -89,6 +91,12 @@ DATABASES = {
     }
 }
 
+# Rest freamework setup
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

@@ -26,7 +26,7 @@ class Post(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.DO_NOTHING
     )
-    realesed_date = models.DateField(auto_now_add=True)
+    release_date = models.DateField(auto_now_add=True)
     title = models.CharField(max_length=100)
     extract = models.CharField(max_length=255)
     main_image = models.ImageField(upload_to="media/posts/images/%Y/%m")
