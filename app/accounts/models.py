@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import (AbstractBaseUser,
                                         BaseUserManager,
@@ -28,6 +30,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model that suports using email instead username"""
+    id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
