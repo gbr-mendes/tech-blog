@@ -25,28 +25,7 @@
     </div>
 </div>
 <script>
-    function loopPagination(page, totalButtons){
-        let buttons = ''
-        for(let i = 0; i < totalButtons; i++){
-            buttons += `<li class="page-item ${page + i === page ? 'active' : ''}" onClick="fetchArticles(${page + i})"><a class="page-link" href="#main-content">${page + i}</a></li>`
-        }
-        return buttons
-    }
-    function generatePagination(data) {
-        const containerPosts = document.querySelector("#container-posts")
-        const paginationSection = document.createElement("div")
-        paginationSection.classList.add('d-flex','justify-content-center')
-        paginationSection.innerHTML = `
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination">
-                        ${data.page > 1 ? `<li class="page-item"><a class="page-link" href="#main-content" onClick="fetchArticles(${data.page - 1})">Previous</a></li>` : ''}
-                        ${loopPagination(data.page, 3)}
-                        ${data.page < data.total_pages ? `<li class="page-item"><a class="page-link" href="#main-content" onClick="fetchArticles(${data.page + 1})">Next</a></li>` : ''}
-                    </ul>
-                </nav>
-        `
-        containerPosts.appendChild(paginationSection)
-    }
+        
     function generatePostHTML(title, publishedDate, author, summary, _id) {
         const post = `
             <!-- Post preview-->
@@ -74,12 +53,14 @@
             containerPosts.innerHTML += post
         })
     }
-    function fetchPosts(){
+    function fetchPosts(link){
         let posts;
-        fetch('api/posts')
+        fetch(link)
         .then(response => response.json())
-        .then(data => renderArticles(data))
+        .then(data => {
+            renderArticles(data.results)
+        })
     }
-    fetchPosts()
+    fetchPosts('api/posts')
 </script>
 {% endblock content %}
