@@ -2,7 +2,7 @@ function generatePostHTML(title, publishedDate, author, summary, _id) {
     const post = `
         <!-- Post preview-->
         <div class="post-preview" id="${_id}">
-            <a href="post.html">
+            <a href="post/${_id}">
                 <h2 class="post-title">${title}</h2>
                 <h3 class="post-subtitle">${summary.substring(0,100)}...</h3>
             </a>
