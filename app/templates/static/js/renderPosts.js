@@ -17,7 +17,8 @@ function generatePostHTML(title, publishedDate, author, summary, _id) {
     `
     return post
 }
-function renderArticles(articles){
+
+function renderPosts(articles){
     const containerPosts = document.querySelector("#container-posts")
     containerPosts.innerHTML = ''
     articles.forEach(({title, author, release_date, extract,id}) => {
@@ -25,12 +26,27 @@ function renderArticles(articles){
         containerPosts.innerHTML += post
     })
 }
-function fetchPosts(link){
-    let posts;
-    fetch(link)
+
+function fetchPosts(url){
+    fetch(url)
     .then(response => response.json())
     .then(data => {
-        renderArticles(data.results)
+        renderPosts(data.results)
+        generatePaginationElement(data)
     })
 }
+
+function generatePaginationElement(data) {
+    const paginationSection = document.querySelector('#pagination-section')
+    const {previous, next} = data
+    paginationSection.innerHTML = `
+        <nav class="d-flex justify-content-center">
+            <ul class="pagination">
+                ${previous ? `<li class="page-item"><a class="page-link" href="#" onClick="fetchPosts('${previous}')">Previous</a></li>` : ''}
+                ${next ? `<li class="page-item"><a class="page-link" href="#" onClick="fetchPosts('${next}')">Next</a></li>` : ''}
+            </ul>
+        </nav>
+    `
+}
+
 fetchPosts('api/posts')
