@@ -16,5 +16,5 @@ def contact(request):
 
 def post(request, id):
     post = models.Post.objects.get(id=id)
-    context = {"post":post}
+    context = {"post": post}
     return render(request, 'blog/post.html', context)
