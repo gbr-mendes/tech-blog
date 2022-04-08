@@ -5,6 +5,8 @@ from . import models
 def index(request):
     return render(request, 'blog/index.html')
 
+def login(request):
+    return render(request, 'blog/login.html')
 
 def about(request):
     return render(request, 'blog/about.html')
