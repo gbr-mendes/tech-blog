@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block header %}
-<header class="masthead" style="background-image: url('{%static "assets/img/contact-bg.jpg"%}')">
+<header class="masthead" style="background-image:url('{%static "assets/img/contact-bg.jpg"%}')">
     <div class="container position-relative px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
@@ -14,3 +14,29 @@
     </div>
 </header>
 {% endblock header %}
+{% block content %}
+<div class="contact-container container-fluid d-flex justify-content-center align-items-center flex-colum">
+    <div class="form-container col-12 col-md-6">
+        <div class="form-area">
+            <form>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Type your name">
+                  </div>
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Email address</label>
+                  <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Type your email">
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" aria-label="With textarea" placeholder="Type your message"></textarea>
+                  </div>
+                
+                <div class="btn-area d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
