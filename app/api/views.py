@@ -7,6 +7,7 @@ from rest_auth.registration.serializers import SocialLoginSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
+from .permissions import CreatePostPermissions
 
 
 from blog import models
@@ -32,7 +33,7 @@ class RetriveCreatePostsAPIView(generics.ListCreateAPIView):
     
     def get_permissions(self):
         if self.request.method == 'POST':
-            self.permission_classes = (IsAuthenticated,)
+            self.permission_classes = (IsAuthenticated, CreatePostPermissions)
         return super().get_permissions()
     
     def get_authenticators(self):

@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 
 from rest_framework.test import APIClient
 from rest_framework import status
@@ -25,6 +26,10 @@ def sample_category(name):
 def sample_tag(name):
     """Create and return a sample tag"""
     return models.Tag.objects.create(name=name)
+
+
+def create_group(name):
+    return Group.objects.create(name=name)
 
 
 class TestBlogPublicEndpoints(TestCase):
@@ -77,7 +82,6 @@ class TestBlogPublicEndpoints(TestCase):
     def test_login_required(self):
         """Test that login is required  to create a post"""
         payload = {
-            'author': self.author.id,
             'title': 'lorem ipsum',
             'extract': 'lorem ipsum extract',
             'content': 'lorem ipsum content',
@@ -94,11 +98,12 @@ class TestBlogPrivateEndpoints(TestCase):
             email="test@email.com", password="password", name="Test User"
         )
         self.client.force_authenticate(self.author)
+        self.group = create_group('BlogStaff')
+        self.group.user_set.add(self.author)
     
     def test_create_basic_post(self):
         """Test creating posts api method"""
         payload = {
-            'author': self.author.id,
             'title': 'lorem ipsum',
             'extract': 'lorem ipsum extract',
             'content': 'lorem ipsum content',
@@ -119,7 +124,6 @@ class TestBlogPrivateEndpoints(TestCase):
         category2 = sample_category(name='category2')
 
         payload = {
-            'author': self.author.id,
             'title': 'lorem ipsum',
             'extract': 'lorem ipsum extract',
             'content': 'lorem ipsum content',
@@ -138,7 +142,6 @@ class TestBlogPrivateEndpoints(TestCase):
         tag2 = sample_tag(name='tag2')
 
         payload = {
-            'author': self.author.id,
             'title': 'lorem ipsum',
             'extract': 'lorem ipsum extract',
             'content': 'lorem ipsum content',
@@ -150,3 +153,18 @@ class TestBlogPrivateEndpoints(TestCase):
         tags = post.tags.all()
         self.assertIn(tag1, tags)
         self.assertIn(tag2, tags)
+    
+    def test_create_post_user_not_allowed(self):
+        """ Test that a post is not created with a user that not satisfy the role (BlogStaff)"""
+        author = get_user_model().objects.create_user(email='dumemail@test.com', password='password')
+        client = APIClient()
+        client.force_authenticate(author)
+
+        payload = {
+            'title': 'lorem ipsum',
+            'extract': 'lorem ipsum extract',
+            'content': 'lorem ipsum content',
+        }
+
+        res = client.post(POSTS_ENDPOINT, payload)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
