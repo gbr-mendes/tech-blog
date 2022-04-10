@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'rest_auth.registration',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
     #Local apps
     'accounts.apps.AccountsConfig',
     'blog.apps.BlogConfig',
@@ -160,3 +160,12 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APP": {
+            "client_id": "374444986750-vkfl068c522m1452orar89i3qkohm1pt.apps.googleusercontent.com",
+            "secret": "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",
+        },
+    }
+}

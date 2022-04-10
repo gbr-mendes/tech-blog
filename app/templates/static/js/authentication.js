@@ -82,3 +82,66 @@ if(window.location.href.includes('/login')){
       e.preventDefault()
       logoutUser()
   })
+
+  //Google Social Login
+ 
+  /*
+ * Create form to request access token from Google's OAuth 2.0 server.
+ */
+  function oauthSignIn() {
+    // Google's OAuth 2.0 endpoint for requesting an access token
+    var oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
+
+    // Create <form> element to submit parameters to OAuth 2.0 endpoint.
+    var form = document.createElement('form');
+    form.setAttribute('method', 'GET'); // Send as a GET request.
+    form.setAttribute('action', oauth2Endpoint);
+
+    // Parameters to pass to OAuth 2.0 endpoint.
+    var params = {
+      'client_id': document.getElementsByName('google-signin-client_id')[0].content,
+      'redirect_uri': 'http://localhost:8000/login',
+      'response_type': 'token',
+      'scope': 'https://www.googleapis.com/auth/drive.metadata.readonly',
+      'include_granted_scopes': 'true',
+      'state': 'pass-through value'
+    };
+
+    // Add form parameters as hidden input values.
+    for (var p in params) {
+      var input = document.createElement('input');
+      input.setAttribute('type', 'hidden');
+      input.setAttribute('name', p);
+      input.setAttribute('value', params[p]);
+      form.appendChild(input);
+    }
+
+    // Add form to page and submit it to open the OAuth 2.0 endpoint.
+    document.body.appendChild(form);
+    form.submit()
+}
+(function checkSocialAuthentication(){
+  const queryString = window.location.hash
+  const urlParams = new URLSearchParams(queryString.split('#')[1])
+  const accessToken = urlParams.get('access_token')
+  if(accessToken) {
+    const options = {
+      headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+      method: 'POST',
+      cache: 'default',
+      body: JSON.stringify({'access_token': accessToken})
+    }
+    fetch('/rest-auth/google/', options)
+      .then(resp=> resp.json())
+      .then(token => {
+        window.sessionStorage.setItem(Object.keys(token), token.key)
+        if(checkCredentials()){
+          window.location.href = '/'
+        }
+      })
+  }
+})()

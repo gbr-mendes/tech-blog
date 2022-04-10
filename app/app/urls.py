@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+from api import views
 
 urlpatterns = [
     #  Django urls
@@ -24,7 +25,9 @@ urlpatterns = [
     # Third party urls
     path('api-auth/', include('rest_framework.urls')),
     path('rest-auth/', include('rest_auth.urls')),
+    path('accounts/', include('allauth.urls'), name='socialaccount_signup'),
     path('rest-auth/registration/', include('rest_auth.registration.urls')),
+    path('rest-auth/google/', views.GoogleLogin.as_view(), name='google_login'),
     #  Local urls
     path("", include("blog.urls")),
     path("api/", include('api.urls')),
