@@ -1,3 +1,4 @@
+from.serializers import EmailSerializer
 from rest_framework import generics
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
@@ -20,6 +21,12 @@ class GoogleLogin(SocialLoginView):
         kwargs['context'] = self.get_serializer_context()
         return serializer_class(*args, **kwargs)
 
+
+# Comumn views
 class RetrivePostsAPIView(generics.ListAPIView):
     queryset = models.Post.objects.all()
     serializer_class = PostSerializer
+
+
+class EmailAPIView(generics.CreateAPIView):
+    serializer_class = EmailSerializer

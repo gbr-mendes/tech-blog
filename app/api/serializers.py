@@ -1,6 +1,7 @@
+from dataclasses import fields
 from rest_framework import serializers
 
-from blog.models import Post
+from blog.models import Email, Post
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -13,3 +14,10 @@ class PostSerializer(serializers.ModelSerializer):
         rep = super(PostSerializer, self).to_representation(instance)
         rep['author'] = instance.author.name
         return rep
+
+
+class EmailSerializer(serializers.ModelSerializer):
+    """ Serializer to email model """
+    class Meta:
+        model = Email
+        fields = ('name', 'email', 'message')

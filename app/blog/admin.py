@@ -7,6 +7,12 @@ class PostAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'author')
 
 
+class EmailAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'email')
+    list_display_links = ('id', 'name')
+
+
 admin.site.register(models.Category)
 admin.site.register(models.Tag)
 admin.site.register(models.Post, PostAdmin)
+admin.site.register(models.Email, EmailAdmin)

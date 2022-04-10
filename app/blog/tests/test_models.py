@@ -33,3 +33,12 @@ class TestBlogModels(TestCase):
         }
         post = models.Post.objects.create(**post_pyload)
         self.assertEqual(str(post), post.title)
+    
+    def test_str_email(self):
+        """Test that email is returned as a string"""
+        email = models.Email.objects.create(
+            name='Test Sender',
+            email='test@email.com',
+            message='lorem ipsum'
+        )
+        self.assertEqual(str(email), email.name)
