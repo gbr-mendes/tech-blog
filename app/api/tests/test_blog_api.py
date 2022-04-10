@@ -17,6 +17,16 @@ def create_posts(posts):
         models.Post.objects.create(**post)
 
 
+def sample_category(name):
+    """Create and return a sample category"""
+    return models.Category.objects.create(name=name)
+
+
+def sample_tag(name):
+    """Create and return a sample tag"""
+    return models.Tag.objects.create(name=name)
+
+
 class TestBlogPublicEndpoints(TestCase):
     """Test for public endpoints of the blog api"""
 
@@ -63,3 +73,80 @@ class TestBlogPublicEndpoints(TestCase):
                 self.postsPayload[i]["extract"],
                 resp.data["results"][i]["extract"]
             )
+
+    def test_login_required(self):
+        """Test that login is required  to create a post"""
+        payload = {
+            'author': self.author.id,
+            'title': 'lorem ipsum',
+            'extract': 'lorem ipsum extract',
+            'content': 'lorem ipsum content',
+        }
+        res = self.client.post(POSTS_ENDPOINT, payload)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class TestBlogPrivateEndpoints(TestCase):
+    """Test for private endpoints of the blog api"""
+    def setUp(self):
+        self.client = APIClient()
+        self.author = get_user_model().objects.create_user(
+            email="test@email.com", password="password", name="Test User"
+        )
+        self.client.force_authenticate(self.author)
+    
+    def test_create_basic_post(self):
+        """Test creating posts api method"""
+        payload = {
+            'author': self.author.id,
+            'title': 'lorem ipsum',
+            'extract': 'lorem ipsum extract',
+            'content': 'lorem ipsum content',
+        }
+        res = self.client.post(POSTS_ENDPOINT, payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        post = models.Post.objects.get(id=res.data['id'])
+        for key in payload.keys():
+            if key == 'author':
+                author = get_user_model().objects.get(id=payload[key])
+                self.assertEqual(str(author), res.data['author'])
+            else:
+                self.assertEqual(payload[key], getattr(post, key))
+    
+    def test_create_post_with_categories(self):
+        """Testing create post with categories"""
+        category1 = sample_category(name='category1')
+        category2 = sample_category(name='category2')
+
+        payload = {
+            'author': self.author.id,
+            'title': 'lorem ipsum',
+            'extract': 'lorem ipsum extract',
+            'content': 'lorem ipsum content',
+            'categories': [category1.id, category2.id]
+        }
+        res = self.client.post(POSTS_ENDPOINT, payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        post = models.Post.objects.get(id=res.data['id'])
+        categories = post.categories.all()
+        self.assertIn(category1, categories)
+        self.assertIn(category2, categories)
+    
+    def test_create_post_with_tags(self):
+        """Testing create post with tags"""
+        tag1 = sample_tag(name='tag1')
+        tag2 = sample_tag(name='tag2')
+
+        payload = {
+            'author': self.author.id,
+            'title': 'lorem ipsum',
+            'extract': 'lorem ipsum extract',
+            'content': 'lorem ipsum content',
+            'tags': [tag1.id, tag2.id]
+        }
+        res = self.client.post(POSTS_ENDPOINT, payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        post = models.Post.objects.get(id=res.data['id'])
+        tags = post.tags.all()
+        self.assertIn(tag1, tags)
+        self.assertIn(tag2, tags)

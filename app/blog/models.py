@@ -33,10 +33,10 @@ class Post(models.Model):
     release_date = models.DateField(auto_now_add=True)
     title = models.CharField(max_length=100)
     extract = models.CharField(max_length=255)
-    main_image = models.ImageField(upload_to="media/posts/images/%Y/%m")
+    main_image = models.ImageField(upload_to="media/posts/images/%Y/%m", blank=True, null=True)
     content = models.TextField()
-    categories = models.ManyToManyField(Category)
-    tags = models.ManyToManyField(Tag)
+    categories = models.ManyToManyField(Category, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
         return self.title
