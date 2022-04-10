@@ -11,7 +11,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 import os
+import environ
 from pathlib import Path
+
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)2m^1=+so8a5*1un1bv__yl2)eng_$3*g7xy*7kq_l4l8p9ik3'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -164,8 +168,8 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "APP": {
-            "client_id": "374444986750-vkfl068c522m1452orar89i3qkohm1pt.apps.googleusercontent.com",
-            "secret": "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",
+            "client_id": env('GOOGLE_CLIENT_ID'),
+            "secret": env('GOOGLE_SOCIAL_SECRETE_KEY'),
         },
     }
 }
