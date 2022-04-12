@@ -42,6 +42,16 @@ class Post(models.Model):
         return self.title
 
 
+class Comment(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    comment = models.TextField()
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.author.name
+
+
 class Email(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     name = models.CharField(max_length=255)

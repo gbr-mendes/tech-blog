@@ -1,4 +1,5 @@
-from.serializers import EmailSerializer, CreatePostSerializer, ListPostSerializer
+from django.core.exceptions import ValidationError
+from.serializers import CreateCommentSerializer, EmailSerializer, CreatePostSerializer, ListPostSerializer,RetriveCommentsSerializer
 from rest_framework import generics
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
@@ -8,7 +9,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
 from .permissions import CreatePostPermissions
-
+from .utils.exceptions import PostNotFound, UUIDInvalid
 
 from blog import models
 
@@ -50,5 +51,46 @@ class RetriveCreatePostsAPIView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
+
 class EmailAPIView(generics.CreateAPIView):
     serializer_class = EmailSerializer
+
+
+class ListCreateCommentAPIView(generics.ListCreateAPIView):
+    def get_queryset(self):
+        uid = self.request.GET.get('post_id')
+        try:
+            exists = models.Post.objects.filter(id=uid).exists()
+        except ValidationError:
+            raise UUIDInvalid
+        if not exists:
+            raise PostNotFound()
+        comments = models.Comment.objects.filter(post=uid)
+        return comments
+
+    def get_authenticators(self):
+        if self.request.method == 'POST':
+            self.authentication_classes = (TokenAuthentication,)
+        return super().get_authenticators()
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            self.permission_classes = (IsAuthenticated,)
+        return super().get_permissions()
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return RetriveCommentsSerializer
+        elif self.request.method == 'POST':
+            return CreateCommentSerializer
+
+    def perform_create(self, serializer):
+        uid = self.request.GET.get('post_id')
+        try:
+            post = models.Post.objects.filter(id=uid)[0]
+        except IndexError:
+            raise PostNotFound
+        except ValidationError:
+            raise UUIDInvalid
+
+        serializer.save(author=self.request.user, post=post)

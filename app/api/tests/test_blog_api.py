@@ -1,3 +1,4 @@
+from uuid import uuid4
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -10,12 +11,17 @@ from blog import models
 
 
 POSTS_ENDPOINT = reverse('api:posts')
+COMMENTS_ENDPOINT = reverse('api:comments')
 
 
 # Helper Function
 def create_posts(posts):
     for post in posts:
         models.Post.objects.create(**post)
+
+def create_comments(comments):
+    for comment in comments:
+        models.Comment.objects.create(**comment)
 
 
 def sample_category(name):
@@ -168,3 +174,139 @@ class TestBlogPrivateEndpoints(TestCase):
 
         res = client.post(POSTS_ENDPOINT, payload)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+    
+    def test_create_comment(self):
+        """Test creating a comment to a post"""
+        author = get_user_model().objects.create_user(email='dumemail@test.com', password='password')
+        client = APIClient()
+        client.force_authenticate(author)
+        post = models.Post.objects.create(
+            author = get_user_model().objects.create_user(
+                email="dumemail2@test.com",
+                password="password"
+            ),
+            title = 'lorem ipsum',
+            extract = 'lorem ipsum extract',
+            content = 'lorem ipsum content',
+        )
+
+        payload = {
+            "comment": 'lorem ipsum extract',
+        }
+        res = client.post(f"{COMMENTS_ENDPOINT}?post_id={post.id}", payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        exists = models.Comment.objects.filter(id=res.data['id']).exists()
+        self.assertTrue(exists)
+    
+    def test_create_comment_unauthorized(self):
+        """Test creating a comment with a user unauthenticated"""
+        client = APIClient()
+        
+        post = models.Post.objects.create(
+            author = get_user_model().objects.create_user(
+                email="dumemail2@test.com",
+                password="password"
+            ),
+            title = 'lorem ipsum',
+            extract = 'lorem ipsum extract',
+            content = 'lorem ipsum content',
+        )
+
+        payload = {
+            "comment": 'lorem ipsum extract',
+        }
+        res = client.post(f"{COMMENTS_ENDPOINT}?post_id={post.id}", payload)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+    
+    def test_get_comments(self):
+        """Test retriving comments"""
+        client = APIClient()
+
+        post = models.Post.objects.create(
+            author = get_user_model().objects.create_user(
+                email="dumemail@test.com",
+                password="password"
+            ),
+            title = 'lorem ipsum',
+            extract = 'lorem ipsum extract',
+            content = 'lorem ipsum content',
+        )
+        
+        author = get_user_model().objects.create_user(
+            email="dumemail2@test.com",
+            password="password"
+        )
+
+        comments_payload = [
+            {
+                "author": author,
+                "comment": 'lorem ipsum extract',
+                "post": post
+            },
+            {
+                "author": author,
+                "comment": 'lorem ipsum extract',
+                "post": post
+            },{
+                "author": author,
+                "comment": 'lorem ipsum extract',
+                "post": post
+            },
+        ]
+
+        create_comments(comments_payload)
+
+        res = client.get(f"{COMMENTS_ENDPOINT}?post_id={post.id}")
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        
+        results = res.data["results"]
+
+        self.assertEqual(len(comments_payload), len(results))
+
+        for index, comment in enumerate(comments_payload):
+            self.assertEqual(comment["author"].id, results[index]["author"])
+            self.assertEqual(comment["comment"], results[index]["comment"])
+            self.assertEqual(comment["post"].id, results[index]["post"])
+
+    def test_get_comments_post_unknown(self):
+        """Test if a nice message is returned when trying to fetch comments for a post that doesn't exist"""
+        client = APIClient()
+        post_id = uuid4()
+        res = client.get(f"{COMMENTS_ENDPOINT}?post_id={post_id}")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.data["detail"], "We couldn't find the requested post!")
+    
+    def test_create_comment_post_unknown(self):
+        """Test if a nice message is returned when trying to create a comment for a post that doesn't exist"""
+        author = get_user_model().objects.create_user(email='dumemail@test.com', password='password')
+        client = APIClient()
+        client.force_authenticate(author)
+        post_id = uuid4()
+
+        payload = {
+            "comment": 'lorem ipsum extract',
+        }
+        res = client.post(f"{COMMENTS_ENDPOINT}?post_id={post_id}", payload)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.data["detail"], "We couldn't find the requested post!")
+    
+    def test_get_comments_invalid_uuid(self):
+        """Test if a nice message is returned when trying to fetch comments for a post passing an invalid uuid"""
+        client = APIClient()
+        post_id = "dum_id"
+        res = client.get(f"{COMMENTS_ENDPOINT}?post_id={post_id}")
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.data["detail"], "UUID passed as parameter is invalid")
+    
+    def test_create_comment_invalid_uuid(self):
+        """Test if a nice message is returned when trying to create a comment for a post passing an invalid uuid"""
+        author = get_user_model().objects.create_user(email='dumemail@test.com', password='password')
+        client = APIClient()
+        client.force_authenticate(author)
+        post_id = "dum_id"
+        payload = {
+            "comment": 'lorem ipsum extract',
+        }
+        res = client.post(f"{COMMENTS_ENDPOINT}?post_id={post_id}", payload)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.data["detail"], "UUID passed as parameter is invalid")

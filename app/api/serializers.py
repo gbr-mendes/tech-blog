@@ -1,6 +1,7 @@
+from dataclasses import fields
 from rest_framework import serializers
 
-from blog.models import Email, Post
+from blog.models import Email, Post, Comment
 
 
 class ListPostSerializer(serializers.ModelSerializer):
@@ -24,6 +25,23 @@ class CreatePostSerializer(serializers.ModelSerializer):
         rep = super(CreatePostSerializer, self).to_representation(instance)
         rep['author'] = instance.author.name
         return rep
+
+
+class CreateCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('id', 'comment')
+
+
+class RetriveCommentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('id', 'author', 'comment', 'post')
+
+        def to_representation(self, instance):
+            rep = super(CreatePostSerializer, self).to_representation(instance)
+            rep['author'] = instance.author.name
+            return rep
 
 
 class EmailSerializer(serializers.ModelSerializer):

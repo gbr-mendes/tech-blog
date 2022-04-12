@@ -27,11 +27,11 @@ class TestBlogModels(TestCase):
         author = get_user_model().objects.create_user(
             email="test@user.com", password="password"
         )
-        post_pyload = {
+        post_payload = {
             "author": author,
             "title": "Test Title Post"
         }
-        post = models.Post.objects.create(**post_pyload)
+        post = models.Post.objects.create(**post_payload)
         self.assertEqual(str(post), post.title)
     
     def test_str_email(self):
@@ -42,3 +42,22 @@ class TestBlogModels(TestCase):
             message='lorem ipsum'
         )
         self.assertEqual(str(email), email.name)
+    
+    def test_str_comment(self):
+        """Test that a comment is returned as a string"""
+        author = get_user_model().objects.create_user(
+            email="test@email.com",
+            password="password",
+            name="Test Auhtor"
+        )
+        post_payload = {
+            "author": author,
+            "title": "Test Title Post"
+        }
+        post = models.Post.objects.create(**post_payload)
+        comment = models.Comment.objects.create(
+            author=author,
+            comment='lorem ipsum',
+            post=post
+        )
+        self.assertEqual(str(comment), author.name)
