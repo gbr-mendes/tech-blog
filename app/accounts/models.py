@@ -4,7 +4,9 @@ from django.db import models
 from django.contrib.auth.models import (AbstractBaseUser,
                                         BaseUserManager,
                                         PermissionsMixin)
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from allauth.socialaccount.models import SocialAccount
 
 class UserManager(BaseUserManager):
 
@@ -44,3 +46,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         if self.name:
             return self.name
         return self.email
+
+@receiver(post_save, sender=User)
+def add_name_auth_register(sender, instance, **kwargs):
+    email = instance.email
+    exists = SocialAccount.objects.filter(user__email=email).exists()
+    if exists:
+        user_social_account = SocialAccount.objects.get(user__email=email)
+        name = user_social_account.extra_data["name"]
+        User.objects.filter(id=instance.id).update(name=name)
