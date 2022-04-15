@@ -1,23 +1,24 @@
 {% extends 'base.html' %}
-    {% block header %}
-    <!-- Page Header-->
-    <header class="masthead" style="background-image: url('{{post.main_image.url}}')">
-        <div class="container position-relative px-4 px-lg-5">
-            <div class="row gx-4 gx-lg-5 justify-content-center">
-                <div class="col-md-10 col-lg-8 col-xl-7">
-                    <div class="post-heading">
-                        <h1>{{post.title}}</h1>
-                        <h2 class="subheading">{{post.extract}}</h2>
-                        <span class="meta">
-                            Posted by
-                            <a href="#!">{{post.author}}</a>
-                            on {{post.release_date}}
-                        </span>
-                    </div>
+{% load static %}
+{% block header %}
+<!-- Page Header-->
+<header class="masthead" style="background-image: url('{{post.main_image.url}}')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="post-heading">
+                    <h1>{{post.title}}</h1>
+                    <h2 class="subheading">{{post.extract}}</h2>
+                    <span class="meta">
+                        Posted by
+                        <a href="#!">{{post.author}}</a>
+                        on {{post.release_date}}
+                    </span>
                 </div>
             </div>
         </div>
-    </header>
+    </div>
+</header>
 {% endblock header %}
 
 {% block content %}
@@ -31,4 +32,37 @@
         </div>
     </div>
 </article>
+<section class="comments-section d-flex justify-content-center align-items-center p-5">
+    <div class="container d-flex justify-content-center align-items-center">
+        <div class="row bootstrap snippets bootdeys justify-content-center align-items-center w-100">
+            <div class="col-md-8 col-sm-12">
+                <div class="comment-wrapper">
+                    <div class="panel panel-info">
+                        <div class="panel-heading d-flex flex-column justify-content-center align-items-center m-3">
+                            <h3>Comments</h3>
+                        </div>
+                        <div class="alert d-none" id="alert-area"></div>
+                        <div class="panel-body">
+                            <hr>
+                            <div class="message-area"></div>
+                            <form action="" class="comment-form d-none">
+                                <textarea class="form-control" placeholder="write a comment..." rows="3" id="comment-input"></textarea>
+                                <br>
+                                <button type="submit" class="btn btn-info pull-right" id="comment-btn">Comment</button>
+                            </form>
+                            <div class="clearfix"></div>
+                            <hr>
+                            <ul class="media-list">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock content %}
+{% block scripts %}
+<script src="{%static 'js/renderComments.js'%}"></script>
+{% endblock scripts %}

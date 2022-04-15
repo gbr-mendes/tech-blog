@@ -9,6 +9,8 @@ from rest_auth.registration.views import RegisterView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from rest_framework import status
 from .permissions import CreatePostPermissions
 from .utils.exceptions import PostNotFound, UUIDInvalid
 
@@ -98,4 +100,16 @@ class ListCreateCommentAPIView(generics.ListCreateAPIView):
         except ValidationError:
             raise UUIDInvalid
 
-        serializer.save(author=self.request.user, post=post)
+        return serializer.save(author=self.request.user, post=post)
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        comment = self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        response = {
+            'id': comment.id,
+            'author': comment.author.name,
+            'comment': comment.comment
+        }
+        return Response(response, status=status.HTTP_201_CREATED, headers=headers)

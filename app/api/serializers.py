@@ -40,10 +40,10 @@ class RetriveCommentsSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ('id', 'author', 'comment', 'post')
 
-        def to_representation(self, instance):
-            rep = super(CreatePostSerializer, self).to_representation(instance)
-            rep['author'] = instance.author.name
-            return rep
+    def to_representation(self, instance):
+        rep = super(RetriveCommentsSerializer, self).to_representation(instance)
+        rep['author'] = instance.author.name
+        return rep
 
 
 class EmailSerializer(serializers.ModelSerializer):

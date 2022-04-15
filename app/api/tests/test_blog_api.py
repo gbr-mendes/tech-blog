@@ -198,6 +198,29 @@ class TestBlogPrivateEndpoints(TestCase):
         exists = models.Comment.objects.filter(id=res.data['id']).exists()
         self.assertTrue(exists)
     
+    def test_custom_response_on_post_creation(self):
+        """ Test if the defined custom reponse is returned on post creation """
+        author = get_user_model().objects.create_user(email='dumemail@test.com', password='password')
+        client = APIClient()
+        client.force_authenticate(author)
+        post = models.Post.objects.create(
+            author = get_user_model().objects.create_user(
+                email="dumemail2@test.com",
+                password="password"
+            ),
+            title = 'lorem ipsum',
+            extract = 'lorem ipsum extract',
+            content = 'lorem ipsum content',
+        )
+
+        payload = {
+            "comment": 'lorem ipsum extract',
+        }
+        res = client.post(f"{COMMENTS_ENDPOINT}?post_id={post.id}", payload)
+        keys = ('id', 'author', 'comment')
+        for key in keys:
+            self.assertIn(key, res.data)
+
     def test_create_comment_unauthorized(self):
         """Test creating a comment with a user unauthenticated"""
         client = APIClient()
@@ -234,7 +257,8 @@ class TestBlogPrivateEndpoints(TestCase):
         
         author = get_user_model().objects.create_user(
             email="dumemail2@test.com",
-            password="password"
+            password="password",
+            name="Test Name"
         )
 
         comments_payload = [
@@ -264,7 +288,7 @@ class TestBlogPrivateEndpoints(TestCase):
         self.assertEqual(len(comments_payload), len(results))
 
         for index, comment in enumerate(comments_payload):
-            self.assertEqual(comment["author"].id, results[index]["author"])
+            self.assertEqual(comment["author"].name, results[index]["author"])
             self.assertEqual(comment["comment"], results[index]["comment"])
             self.assertEqual(comment["post"].id, results[index]["post"])
 
