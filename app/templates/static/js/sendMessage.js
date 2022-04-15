@@ -43,7 +43,7 @@ btn.addEventListener('click', e => {
         cache: 'default',
         body: JSON.stringify(data)
     }
-    const url = '/api/send-email/'
+    const url = '/api/send-email'
     fetch(url, options)
         .then(resp => {
             resp.status != 201 ? renderErrors(resp) : successResp(resp)
