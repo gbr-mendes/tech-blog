@@ -36,8 +36,8 @@ if USE_S3:
     DEFAULT_FILE_STORAGE = 'hello_django.storage_backends.PublicMediaStorage'
 else:
     STATIC_URL = '/staticfiles/'
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATIC_ROOT = BASE_DIR/'staticfiles'
     MEDIA_URL = '/mediafiles/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
+    MEDIA_ROOT = BASE_DIR/'mediafiles'
 
 STATICFILES_DIRS = (BASE_DIR/'static',)
