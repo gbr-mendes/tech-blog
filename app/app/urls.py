@@ -27,6 +27,7 @@ urlpatterns = [
     path('rest-auth/', include('rest_auth.urls')),
     path('accounts/', include('allauth.urls'), name='socialaccount_signup'),
     path('rest-auth/registration/', include('rest_auth.registration.urls')),
+    path('rest-auth/registration/register/', views.RegisterUserView.as_view(), name="rest_auth_register"),
     path('rest-auth/google/', views.GoogleLogin.as_view(), name='google_login'),
     #  Local urls
     path("", include("blog.urls")),

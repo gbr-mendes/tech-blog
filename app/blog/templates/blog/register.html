@@ -6,28 +6,32 @@
     <div class="row justify-content-center w-50">
       <div class="login-container col-12">
         <div class="logo-area d-flex justify-content-center">
-          <h2>Tech Blog - Login</h2>
+          <h2>Tech Blog - Register</h2>
         </div>
         <div class="form-area">
           <div class="alert alert-danger mt-2 d-none" id="alert-area">
           </div>
-          <form id="login-form" name="login-form">
+          <form id="register-form" name="register-form">
             {% csrf_token %}
+            <div class="mb-3">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp">
+              </div>
             <div class="mb-3">
               <label for="email" class="form-label">Email address</label>
               <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
               <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
             </div>
             <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
-              <input type="password" class="form-control" name="password" id="password">
+              <label for="password1" class="form-label">Password</label>
+              <input type="password" class="form-control" name="password1" id="password1">
             </div>
-            <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" name="checkbox" id="checkbox">
-              <label class="form-check-label" for="checkbox">Keep me logged in</label>
-            </div>
+            <div class="mb-3">
+                <label for="password2" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" name="password2" id="password2">
+              </div>
             <div class="btn-area d-flex justify-content-center">
-              <button type="submit" class="btn btn-primary" id="btn-submit">Login</button>
+              <button type="submit" class="btn btn-primary" id="btn-submit">Register</button>
             </div>
             <div class="social-login-area d-flex justify-content-center align-items-center mt-3">
               <div id="gSignInWrapper">

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light {%if 'login' in request.path%}bg-dark{%endif%}" id="mainNav">
+<nav class="navbar navbar-expand-lg navbar-light {%if 'login' in request.path or 'register' in request.path%}bg-dark{%endif%}" id="mainNav">
     <div class="container px-4 px-lg-5">
         <a class="navbar-brand" href="{%url 'index'%}">Tech Blog</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -11,6 +11,7 @@
                 <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{%url 'about'%}">About</a></li>
                 <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{%url 'contact'%}">Contact</a></li>
                 <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{%url 'login'%}" data-toggle-visibility='login'>Login</a></li>
+                <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{%url 'register'%}" data-toggle-visibility='register'>Register</a></li>
                 <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4 d-none" href="#" data-toggle-visibility='logout'>Logout</a></li>
             </ul>
         </div>

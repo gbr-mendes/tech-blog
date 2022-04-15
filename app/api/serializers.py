@@ -1,4 +1,6 @@
-from dataclasses import fields
+from rest_framework import serializers
+from rest_auth.registration.serializers import RegisterSerializer
+from rest_auth.registration.views import RegisterView
 from rest_framework import serializers
 
 from blog.models import Email, Post, Comment
@@ -49,3 +51,12 @@ class EmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Email
         fields = ('name', 'email', 'message')
+
+
+class RegisterUserSerializer(RegisterSerializer):
+    """Custom serializer for rest-auth endpoint to create user"""
+    name = serializers.CharField()
+    
+    def custom_signup(self, request, user):
+        user.name = self.validated_data.get('name', '')
+        user.save(update_fields=['name'])

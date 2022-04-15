@@ -1,10 +1,11 @@
 from django.core.exceptions import ValidationError
-from.serializers import CreateCommentSerializer, EmailSerializer, CreatePostSerializer, ListPostSerializer,RetriveCommentsSerializer
+from . import serializers
 from rest_framework import generics
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from rest_auth.registration.views import SocialLoginView
 from rest_auth.registration.serializers import SocialLoginSerializer
+from rest_auth.registration.views import RegisterView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -14,6 +15,10 @@ from .utils.exceptions import PostNotFound, UUIDInvalid
 from blog import models
 
 from .serializers import ListPostSerializer
+
+# View to custom register rest-auth
+class RegisterUserView(RegisterView):
+  serializer_class = serializers.RegisterUserSerializer
 
 # Social Authientication
 class GoogleLogin(SocialLoginView):
@@ -44,7 +49,7 @@ class RetriveCreatePostsAPIView(generics.ListCreateAPIView):
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
-            return CreatePostSerializer
+            return serializers.CreatePostSerializer
         elif self.request.method == 'GET':
             return ListPostSerializer
     
@@ -53,7 +58,7 @@ class RetriveCreatePostsAPIView(generics.ListCreateAPIView):
 
 
 class EmailAPIView(generics.CreateAPIView):
-    serializer_class = EmailSerializer
+    serializer_class = serializers.EmailSerializer
 
 
 class ListCreateCommentAPIView(generics.ListCreateAPIView):
@@ -80,9 +85,9 @@ class ListCreateCommentAPIView(generics.ListCreateAPIView):
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
-            return RetriveCommentsSerializer
+            return serializers.RetriveCommentsSerializer
         elif self.request.method == 'POST':
-            return CreateCommentSerializer
+            return serializers.CreateCommentSerializer
 
     def perform_create(self, serializer):
         uid = self.request.GET.get('post_id')
