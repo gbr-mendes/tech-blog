@@ -71,7 +71,7 @@ def post_save_send_email(sender, instance, **kwargs):
     send_mail(
     f'Email from tech blog: sended by {name}',
     f'Message:\n{message} - sended from {email}',
-    from_email=DEFAULT_FROM_EMAIL,
-    recipient_list=[EMAIL_HOST_USER],
+    from_email=settings.DEFAULT_FROM_EMAIL,
+    recipient_list=[settings.EMAIL_HOST_USER],
     fail_silently=False,
 )
