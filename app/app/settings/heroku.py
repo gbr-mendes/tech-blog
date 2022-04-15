@@ -40,4 +40,4 @@ else:
     MEDIA_URL = '/mediafiles/'
     MEDIA_ROOT = BASE_DIR/'mediafiles'
 
-STATICFILES_DIRS = (BASE_DIR/'static',)
+STATICFILES_DIRS = (BASE_DIR/'templates/static',)
