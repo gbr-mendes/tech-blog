@@ -146,7 +146,7 @@ function oauthSignIn() {
   // Parameters to pass to OAuth 2.0 endpoint.
   var params = {
     'client_id': document.getElementsByName('google-signin-client_id')[0].content,
-    'redirect_uri': `http://${window.location.origin}/login`,
+    'redirect_uri': `${window.location.origin}/login`,
     'response_type': 'token',
     'scope': 'https://www.googleapis.com/auth/drive.metadata.readonly',
     'include_granted_scopes': 'true',
