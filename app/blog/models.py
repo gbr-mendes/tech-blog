@@ -5,7 +5,6 @@ from django.db import models
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from app.settings import EMAIL_HOST_USER, DEFAULT_FROM_EMAIL
 
 
 class Category(models.Model):
