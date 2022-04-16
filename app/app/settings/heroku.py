@@ -41,3 +41,6 @@ else:
     MEDIA_ROOT = BASE_DIR/'mediafiles'
 
 STATICFILES_DIRS = (BASE_DIR/'templates/static',)
+
+# CORS HEADERS SETUP
+CORS_ALLOW_ALL_ORIGINS = env.bool("CORS_ALLOW_ALL_ORIGINS", False)
