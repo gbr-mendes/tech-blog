@@ -60,6 +60,8 @@ class EmailAPIView(generics.CreateAPIView):
 
 
 class ListCreateCommentAPIView(generics.ListCreateAPIView):
+    authentication_classes = (TokenAuthentication,)
+
     def get_queryset(self):
         uid = self.request.GET.get('post_id')
         try:
@@ -70,11 +72,6 @@ class ListCreateCommentAPIView(generics.ListCreateAPIView):
             raise PostNotFound()
         comments = models.Comment.objects.filter(post=uid)
         return comments
-
-    def get_authenticators(self):
-        if self.request.method == 'POST':
-            self.authentication_classes = (TokenAuthentication,)
-        return super().get_authenticators()
 
     def get_permissions(self):
         if self.request.method == 'POST':
