@@ -38,16 +38,12 @@ class GoogleLogin(SocialLoginView):
 class RetriveCreatePostsAPIView(generics.ListCreateAPIView):
     queryset = models.Post.objects.all()
     parser_classes = (MultiPartParser, FormParser, )
+    authentication_classes = (TokenAuthentication,)
     
     def get_permissions(self):
         if self.request.method == 'POST':
             self.permission_classes = (IsAuthenticated, CreatePostPermissions)
         return super().get_permissions()
-    
-    def get_authenticators(self):
-        if self.request.method == 'POST':
-            self.authentication_classes = (TokenAuthentication,)
-        return super().get_authenticators()
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
