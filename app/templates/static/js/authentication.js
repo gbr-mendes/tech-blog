@@ -148,7 +148,7 @@ function oauthSignIn() {
     'client_id': document.getElementsByName('google-signin-client_id')[0].content,
     'redirect_uri': `${window.location.origin}/login`,
     'response_type': 'token',
-    'scope': 'https://www.googleapis.com/openid',
+    'scope': 'https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile',
     'include_granted_scopes': 'true',
     'state': 'pass-through value'
   };
