@@ -1,12 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<div id="g_id_onload"
-      data-client_id="374444986750-vkfl068c522m1452orar89i3qkohm1pt.apps.googleusercontent.com"
-      data-callback="handleCredentialResponse">
-</div>
-<div class="g_id_signin" data-type="standard"></div>
 <section class="mt-5 p-5 row">
   <div class="container-fluid p-0 d-flex flex-column justify-content-center align-items-center" id="main-content">
     <div class="row justify-content-center w-50">
@@ -38,7 +32,8 @@
             <div class="social-login-area d-flex justify-content-center align-items-center mt-3">
               <div id="gSignInWrapper">
                 <div id="customBtn" class="customGPlusSignIn d-flex justify-content-center align-items-center">
-                  <!-- <span class="buttonText" onclick="oauthSignIn()">Google</span> -->
+                  <span class="icon"></span>
+                  <span class="buttonText" onclick="oauthSignIn()">Google</span>
                 </div>
               </div>            
             </div>
@@ -50,6 +45,3 @@
   </div>
 </section>
 {% endblock content %}
-{% block scripts %}
-<script src="https://apis.google.com/js/platform.js" async defer></script>
-{% endblock scripts %}
