@@ -175,7 +175,8 @@ function oauthSignIn() {
       headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'X-CSRFToken': getCookie('csrftoken')
+      'X-CSRFToken': getCookie('csrftoken'),
+      'Authorization': `Bearer ${accessToken}`
     },
       method: 'POST',
       cache: 'default',
