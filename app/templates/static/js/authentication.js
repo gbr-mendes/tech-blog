@@ -146,9 +146,9 @@ function oauthSignIn() {
   // Parameters to pass to OAuth 2.0 endpoint.
   var params = {
     'client_id': document.getElementsByName('google-signin-client_id')[0].content,
-    'redirect_uri': 'http://localhost:8000/login',
+    'redirect_uri': `${window.location.origin}/login`,
     'response_type': 'token',
-    'scope': 'https://www.googleapis.com/auth/drive.metadata.readonly',
+    'scope': 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
     'include_granted_scopes': 'true',
     'state': 'pass-through value'
   };
@@ -175,7 +175,8 @@ function oauthSignIn() {
       headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'X-CSRFToken': getCookie('csrftoken')
+      'X-CSRFToken': getCookie('csrftoken'),
+      'Authorization': `Bearer ${accessToken}`
     },
       method: 'POST',
       cache: 'default',
