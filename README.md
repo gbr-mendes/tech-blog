@@ -1,6 +1,8 @@
 
 # Tech Blog
 
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
+
 Este projeto pessoal é uma aplicação fullstack com as principais funcionalidades de um blog.
 
 Foi desenvolvido com o proposito de aperfeiçoar meus conhecimentos nas seguites tecnologias:
